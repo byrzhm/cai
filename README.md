@@ -4,7 +4,7 @@
 
 cai是一个玩具编译器, 生成的目标代码为riscv64, 生成的目标代码可以在spike上运行。该项目仅为学习编译原理而写, 不具有实用性。
 
-## 依赖
+## 依赖 (建议安装riscv64-unknown-elf)
 
 - [riscv-gnu-toolchain](https://github.com/riscv/riscv-gnu-toolchain)
 - [riscv-pk](https://github.com/riscv-software-src/riscv-pk.git)
@@ -15,8 +15,7 @@ cai是一个玩具编译器, 生成的目标代码为riscv64, 生成的目标代
 安装依赖
 
 ``` bash
-sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev libboost-all-dev
-
+sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev libboost-all-dev device-tree-compiler
 ```
 
 #### 获取riscv-gnu-toolchain源码
@@ -30,9 +29,12 @@ git submodule update --init --recursive
 #### riscv-gnu-toolchain 编译与安装
 
 ``` bash
-./configure --prefix=/usr/local/riscv # linux下默认为risv64-unknown-linux-gnu
-sudo make
+./configure --prefix=/usr/local/riscv
+sudo make -j$(nproc) # risv64-unknown-elf
+# or sudo make linux -j$(nproc) # riscv64-unknown-linux-gnu
 ```
+
+> 建议安装riscv64-unknown-elf, 即 `sudo make -j$(nproc)`
 
 ### 2. riscv-pk
 
@@ -49,11 +51,13 @@ cd riscv-pk
 mkdir build
 cd build
 ../configure --prefix=/usr/local/riscv --host=riscv64-unknown-linux-gnu --with-arch=rv64gc_zifencei
+# or ../configure --prefix=/usr/local/riscv --host=riscv64-unknown-elf --with-arch=rv64gc_zifencei
 make -j$(nproc)
 sudo make install
 ```
 
-> 如果编译失败, 并且失败的原因是缺失 `gnu/stubs-lp64.h`, 执行下面的命令, 然后重新编译安装riscv-pk
+> 1. 如果编译失败(riscv64-unknown-linux-gnu), 并且失败的原因是缺失 `gnu/stubs-lp64.h`, 执行下面的命令, 然后重新编译安装riscv-pk
+> 2. 如果是riscv64-unknown-elf, 一般不会出现这个问题
 
 ``` bash
 cd /usr/local/riscv/sysroot/include/gnu/
@@ -75,11 +79,12 @@ cd riscv-isa-sim
 mkdir build
 cd build
 ../configure --prefix=/usr/local/riscv --with-target=riscv64-unknown-linux-gnu
+# or ../configure --prefix=/usr/local/riscv # default is riscv64-unknown-elf
 make -j$(nproc)
 sudo make install
 ```
 
-## Building
+## Building Cai Compiler
 
 ``` bash
 mkdir build
@@ -88,10 +93,11 @@ cmake ..
 make
 ```
 
-## Usage
+## Usage of Cai Compiler
 
 ``` bash
 ./cai example.cai -o example.s
 riscv64-unknown-linux-gnu-gcc -static -o example example.s
+# or riscv64-unknown-elf-gcc -o example example.s
 spike pk example
 ```

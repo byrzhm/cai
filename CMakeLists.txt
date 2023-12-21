@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.10)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED 20)
 
 project(caic VERSION 1.0 LANGUAGES C CXX)
@@ -12,8 +11,8 @@ add_subdirectory(unittests)
 add_subdirectory(test)
 add_subdirectory(app)
 
+# Doxygen 文档生成
 find_package(Doxygen)
-
 if(DOXYGEN_FOUND)
     add_subdirectory(docs)
 else(DOXYGEN_FOUND)

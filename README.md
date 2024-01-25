@@ -2,7 +2,7 @@
 
 ## 简介
 
-cai是一个玩具编译器, 生成的目标代码为riscv64, 生成的目标代码可以在spike上运行。该项目仅为学习编译原理而写, 不具有实用性。
+cai是一个玩具编译器, 生成的目标代码为riscv64, 生成的目标代码可以在spike上运行。该项目仅为学习编译原理而写, 不具有实用性。本项目主要参考了教程[Write-a-Compiler](https://norasandler.com/2017/11/29/Write-a-Compiler.html).
 
 ## 依赖 (建议安装riscv64-unknown-elf)
 
@@ -18,7 +18,7 @@ cai是一个玩具编译器, 生成的目标代码为riscv64, 生成的目标代
 sudo apt-get install autoconf automake autotools-dev curl python3 python3-pip libmpc-dev libmpfr-dev libgmp-dev gawk build-essential bison flex texinfo gperf libtool patchutils bc zlib1g-dev libexpat-dev ninja-build git cmake libglib2.0-dev libboost-all-dev device-tree-compiler
 ```
 
-#### 获取riscv-gnu-toolchain源码
+#### 获取 riscv-gnu-toolchain 源码
 
 ``` bash
 git clone https://github.com/riscv/riscv-gnu-toolchain

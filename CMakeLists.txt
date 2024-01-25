@@ -4,6 +4,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED 20)
 project(caic VERSION 1.0 LANGUAGES C CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CAI_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+set(CAI_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
+set(CAI_SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts)
+set(THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
+
+find_package(Boost REQUIRED COMPONENTS program_options)
 
 add_subdirectory(3rdparty)
 add_subdirectory(src)

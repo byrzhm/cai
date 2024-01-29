@@ -1,9 +1,12 @@
 #pragma once
 
+#include <llvm/IR/Value.h>
 #include <memory>
 #include <string>
 
 namespace cai {
+
+class AstNodeVisitor;
 
 class FunctionDeclaration;
 class Statement;
@@ -17,9 +20,6 @@ public:
 
   auto operator=(const AstNode &) -> AstNode & = default;
   auto operator=(AstNode &&) -> AstNode & = default;
-
-  // IR generation
-  virtual void irgen() {}
 };
 
 class Program : public AstNode {
@@ -42,7 +42,7 @@ public:
     return *func_decl_;
   }
 
-  void irgen() override;
+  void accept(AstNodeVisitor &visitor);
 
 private:
   // TODO(): vector of declarations
@@ -75,7 +75,7 @@ public:
   [[nodiscard]] auto body() const -> const Statement & { return *body_; }
   [[nodiscard]] auto body() -> Statement & { return *body_; }
 
-  void irgen() override;
+  auto accept(AstNodeVisitor &visitor) -> llvm::Function *;
 
 private:
   std::string name_;
@@ -95,6 +95,8 @@ public:
 
   auto operator=(const Expression &) -> Expression & = default;
   auto operator=(Expression &&) -> Expression & = default;
+
+  virtual auto accept(AstNodeVisitor &visitor) -> llvm::Value * = 0;
 };
 
 class IntegerLiteral : public Expression {
@@ -111,7 +113,7 @@ public:
 
   [[nodiscard]] auto value() const -> int { return value_; }
 
-  void irgen() override;
+  auto accept(AstNodeVisitor &visitor) -> llvm::Value * override;
 
 private:
   int value_;
@@ -126,6 +128,8 @@ public:
 
   auto operator=(const Statement &) -> Statement & = default;
   auto operator=(Statement &&) -> Statement & = default;
+
+  virtual auto accept(AstNodeVisitor &visitor) -> llvm::Value* = 0;
 };
 
 class ReturnStatement : public Statement {
@@ -143,7 +147,7 @@ public:
   [[nodiscard]] auto expr() const -> const Expression & { return *expr_; }
   [[nodiscard]] auto expr() -> Expression & { return *expr_; }
 
-  void irgen() override;
+  auto accept(AstNodeVisitor &visitor) -> llvm::Value* override;
 
 private:
   std::unique_ptr<Expression> expr_;

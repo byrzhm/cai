@@ -9,7 +9,9 @@ Checks: '
   -readability-identifier-length,
   -modernize-avoid-c-arrays,
   -cppcoreguidelines-avoid-c-arrays,
-  -cppcoreguidelines-pro-type-const-cast
+  -cppcoreguidelines-pro-type-const-cast,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
   '
 
 WarningsAsErrors: ''

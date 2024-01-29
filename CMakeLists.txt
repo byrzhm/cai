@@ -9,6 +9,8 @@ set(CAI_SOURCE_DIR ${CMAKE_SOURCE_DIR}/src)
 set(CAI_SCRIPTS_DIR ${CMAKE_SOURCE_DIR}/scripts)
 set(THIRD_PARTY_DIR ${CMAKE_SOURCE_DIR}/3rdparty)
 
+add_compile_options(-Wno-format-security)
+
 ## Boost
 find_package(Boost REQUIRED COMPONENTS program_options)
 
@@ -23,6 +25,9 @@ separate_arguments(LLVM_DEFINITIONS_LIST NATIVE_COMMAND ${LLVM_DEFINITIONS})
 add_definitions(${LLVM_DEFINITIONS_LIST})
 
 llvm_map_components_to_libnames(llvm_libs support core irreader)
+
+## termcolor
+include_directories(${THIRD_PARTY_DIR}/termcolor/include)
 
 ## subdirectories
 add_subdirectory(3rdparty)

@@ -1,8 +1,8 @@
-#include "util/cai_log.h"
 #include "driver/cai_driver.h"
+#include "util/cai_log.h"
 #include <boost/program_options.hpp>
-#include <iostream>
 #include <filesystem>
+#include <iostream>
 
 /**
  * See https://www.boost.org/doc/libs/1_58_0/doc/html/program_options.html
@@ -11,7 +11,7 @@ namespace po = boost::program_options;
 
 class CommandArgs {
 public:
-  static auto get() -> CommandArgs& {
+  static auto get() -> CommandArgs & {
     static CommandArgs instance;
     return instance;
   }
@@ -28,12 +28,14 @@ private:
 
 void parse_args(int argc, char **argv) {
   po::options_description desc("Allowed options");
-  desc.add_options()
-     ("help,h", "produce help message")
-     ("emit-ir", "output IR file")
-     ("output-file,o", po::value<std::string>(&CommandArgs::get().output_file_), "output file")
-     ("input-file", po::value<std::string>(&CommandArgs::get().input_file_), "input file")
-     ("optimize-level,O", po::value<int>(&CommandArgs::get().optimize_level_), "optimize level[0-1]");
+  desc.add_options()("help,h", "produce help message")("emit-ir",
+                                                       "output IR file")(
+      "output-file,o", po::value<std::string>(&CommandArgs::get().output_file_),
+      "output file")("input-file",
+                     po::value<std::string>(&CommandArgs::get().input_file_),
+                     "input file")(
+      "optimize-level,O", po::value<int>(&CommandArgs::get().optimize_level_),
+      "optimize level[0-1]");
 
   po::positional_options_description p;
   p.add("input-file", -1);
@@ -54,7 +56,7 @@ void parse_args(int argc, char **argv) {
   }
 
   if (vm.count("input-file") == 0) {
-    cailog::error("No input file specified.");
+    cai::cailog::error("No input file specified.\n");
     exit(1);
   }
 
@@ -71,11 +73,22 @@ void parse_args(int argc, char **argv) {
 
     CommandArgs::get().output_file_ = input_path.string();
   }
-
 }
 
 auto main(int argc, char **argv) -> int {
   parse_args(argc, argv);
-  cai::CaiDriver driver;
+  cai::CaiDriver &driver = cai::CaiDriver::get();
+
+  // order matters
+  driver.set_input_file(CommandArgs::get().input_file_)
+      .set_output_file(CommandArgs::get().output_file_)
+      .set_emit_ir(CommandArgs::get().emit_ir_)
+      .set_optimize_level(CommandArgs::get().optimize_level_)
+      .init_module();
+
+  driver.parse();
+
+  driver.compile();
+
   return 0;
 }

@@ -9,6 +9,7 @@ target_link_libraries(caic
     PRIVATE
         Boost::program_options
         cai_lib
+        ${llvm_libs}
     )
 
 target_compile_features(caic PRIVATE cxx_std_17)

@@ -1,4 +1,5 @@
 add_subdirectory(driver)
+add_subdirectory(ast)
 add_subdirectory(inter)
 add_subdirectory(parse)
 add_subdirectory(util)

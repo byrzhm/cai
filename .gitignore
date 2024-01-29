@@ -144,3 +144,9 @@ iwyu/
 iwyu_build/
 # fuzzer logs
 fuzz-*.log
+
+_*
+
+# flex and bison generated files
+src/parse/*.cc
+include/parse/*.hh

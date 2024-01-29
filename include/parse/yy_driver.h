@@ -30,10 +30,8 @@ public:
       : filename_(std::move(filename)), trace_parsing_(trace_parsing),
         trace_scanning_(trace_scanning) {}
 
-  /**
-   * parse - parse from a file
-   * @param filename - valid string with input file
-   */
+  auto parse() -> int;
+
   auto parse(const std::string &filename) -> int;
 
   auto get_location() -> location & { return location_; }
@@ -52,10 +50,10 @@ public:
     trace_scanning_ = trace_scanning;
   }
 
-  [[nodiscard]] auto program() const -> const cai::Program & {
-    return *program_;
+  [[nodiscard]] auto program() const -> const std::unique_ptr<cai::Program> & {
+    return program_;
   }
-  [[nodiscard]] auto program() -> cai::Program & { return *program_; }
+  [[nodiscard]] auto program() -> std::unique_ptr<cai::Program> & { return program_; }
 
   void set_program(std::unique_ptr<cai::Program> program) {
     program_ = std::move(program);
@@ -68,8 +66,9 @@ private:
 
   std::unique_ptr<cai::Program> program_;
 
-  bool trace_parsing_ = false;
-  bool trace_scanning_ = false;
+  // for unittest default to true
+  bool trace_parsing_ = true;
+  bool trace_scanning_ = true;
 };
 
 } // namespace yy

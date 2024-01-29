@@ -6,8 +6,7 @@
 
 namespace yy {
 
-auto YYDriver::parse(const std::string &filename) -> int {
-  filename_ = filename;
+auto YYDriver::parse() -> int {
   location_.initialize(&filename_);
   scan_begin();
   YYParser parse(*this);
@@ -16,6 +15,11 @@ auto YYDriver::parse(const std::string &filename) -> int {
   int res = parse();
   scan_end();
   return res;
+}
+
+auto YYDriver::parse(const std::string &filename) -> int {
+  filename_ = filename;
+  return parse();
 }
 
 } // namespace yy

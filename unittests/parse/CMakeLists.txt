@@ -15,6 +15,7 @@ foreach(CAI_PARSE_TEST_NAME ${CAI_PARSE_TESTS})
         PRIVATE
             cai_lib
             gmock_main
+            ${llvm_libs}
     )
 
     set_target_properties(${CAI_PARSE_TEST_NAME} PROPERTIES

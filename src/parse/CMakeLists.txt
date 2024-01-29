@@ -29,8 +29,12 @@ add_custom_target(
 
 add_library(cai_parser OBJECT yy_driver.cpp ${GENERATED_SOURCE_FILES})
 
-target_include_directories(cai_parser PRIVATE ${CAI_INCLUDE_DIR})
-target_include_directories(cai_parser PRIVATE ${CAI_INCLUDE_DIR}/parse)
+target_include_directories(
+    cai_parser
+        PRIVATE
+            ${CAI_INCLUDE_DIR}
+            ${CAI_INCLUDE_DIR}/parse
+)
 
 add_dependencies(cai_parser generate_parser)
 

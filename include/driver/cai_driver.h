@@ -1,46 +1,58 @@
 #pragma once
 
-#include "parse/yy_driver.h"
+#include "ast/ast.h"
+#include <llvm/IR/IRBuilder.h>
+#include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/Module.h>
+
+#include <utility>
 
 namespace cai {
 
 class CaiDriver {
+  friend class IRVisitor;
+
 public:
-  CaiDriver() = default;
   CaiDriver(const CaiDriver &) = delete;
   CaiDriver(CaiDriver &&) = delete;
   auto operator=(const CaiDriver &) -> CaiDriver & = delete;
   auto operator=(CaiDriver &&) -> CaiDriver & = delete;
   ~CaiDriver() = default;
 
+  static auto get() -> CaiDriver &;
+
   /**
    * parse - parse from a file
-   * @param filename - valid string with input file
    */
-  auto parse(const std::string &filename) -> int;
+  auto parse() -> int;
 
-  [[nodiscard]] auto trace_parsing() const -> bool { return trace_parsing_; }
-  void set_trace_parsing(bool trace_parsing) { trace_parsing_ = trace_parsing; }
+  auto compile() -> void;
 
-  [[nodiscard]] auto trace_scanning() const -> bool { return trace_scanning_; }
-  void set_trace_scanning(bool trace_scanning) {
-    trace_scanning_ = trace_scanning;
-  }
+  auto init_module() -> CaiDriver &;
 
-  [[nodiscard]] auto program() const -> const Program & { return *program_; }
-  [[nodiscard]] auto program() -> Program & { return *program_; }
+  auto set_input_file(std::string input_file) -> CaiDriver &;
 
-  void set_program(std::unique_ptr<Program> program) {
-    program_ = std::move(program);
-  }
+  auto set_output_file(std::string output_file) -> CaiDriver &;
+
+  auto set_emit_ir(bool emit_ir) -> CaiDriver &;
+
+  auto set_optimize_level(int optimize_level) -> CaiDriver &;
 
 private:
+  CaiDriver() = default;
+
+  std::string input_file_;  ///< input file
+  std::string output_file_; ///< output file
+
+  // TODO(zhm): set default value to false
+  bool emit_ir_ = true;    ///< emit IR
+  int optimize_level_ = 0; ///< optimization level
+
   std::unique_ptr<Program> program_;
 
-  bool trace_parsing_ = false;
-  bool trace_scanning_ = false;
-
-  yy::YYDriver yy_driver_;
+  std::unique_ptr<llvm::LLVMContext> context_; ///< LLVM context
+  std::unique_ptr<llvm::IRBuilder<>> builder_; ///< LLVM IR builder
+  std::unique_ptr<llvm::Module> module_;       ///< LLVM module
 };
 
 } // namespace cai
